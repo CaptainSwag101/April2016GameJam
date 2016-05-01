@@ -1,1 +1,29 @@
 Make game - Noon Monday
+
+Interactables - Flower pots (Goal of 3 different interacts, add more on Monday.)
+Good/Evill Bar.
+
+Forced walk scenes, story context
+	TREES IN FOREST
+		Semi-Transparent Black rect
+		Backgrounf of tiled trees
+	bool IsTiledBackground for controlling layering.
+
+Punching System/Combat/Boss
+
+Update sprite animation. move both legs, and reposition hand. Both directions
+
+Draw new boss and initial friends.
+
+Entity to Entity collision detection. 
+
+
+.
+.
+.
+.
+.
+.
+.
+Extra Interactables
+
