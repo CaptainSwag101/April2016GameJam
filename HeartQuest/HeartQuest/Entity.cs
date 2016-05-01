@@ -15,6 +15,7 @@ namespace HeartQuest
         public Vector2 Velocity { get; protected set; }
         public int CurrentImage { get; protected set; }
         public bool IsOnGround { get; protected set; }
+        public bool IsMoving { get; protected set; }
         public Rectangle Bounds
         {
             get
@@ -41,7 +42,8 @@ namespace HeartQuest
             CurrentImage = startImage;
             Velocity = Vector2.Zero;
             IsOnGround = false;
-            health = 76;
+            health = 100;
+            IsMoving = false;
         }
 
         public void MoveBy(Vector2 amount)

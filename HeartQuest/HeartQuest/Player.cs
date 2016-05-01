@@ -12,6 +12,7 @@ namespace HeartQuest
     class Player : Entity
     {
         private int FrameStart = 0;
+        private int LastFrameStart = 0;
         public Player(Texture2D[] images, Vector2 startPos) : base(images, startPos, 0)
         {
 
@@ -19,8 +20,15 @@ namespace HeartQuest
 
         public override void Update(GameTime gameTime)
         {
-            int walkCount = (int) (gameTime.TotalGameTime.TotalSeconds*10) % 2;
-            CurrentImage = walkCount + FrameStart;
+
+            IsMoving = InputManager.CurrentState.IsKeyDown(Keys.A) || InputManager.CurrentState.IsKeyDown(Keys.D);
+            
+            if (IsMoving)
+            {
+                int walkCount = (int)(gameTime.TotalGameTime.TotalSeconds * 10) % 2;
+                CurrentImage = walkCount + FrameStart;
+            }
+
             if (InputManager.KeyPressed(Keys.W) && IsOnGround)
             {
                 Velocity = new Vector2(Velocity.X, -100.0f);
@@ -31,18 +39,18 @@ namespace HeartQuest
 
             if (InputManager.CurrentState.IsKeyDown(Keys.A))
             {
+                //LastFrameStart = FrameStart;
                 //change to left pic
                 Velocity = new Vector2(-50.0f, Velocity.Y);
                 IsOnGround = false;
                 FrameStart = 2; //left, no walk
-
             }
             else if (InputManager.CurrentState.IsKeyDown(Keys.D))
             {
                 //change to right pic
                 Velocity = new Vector2(50.0f, Velocity.Y);
                 IsOnGround = false;
-                FrameStart = 0; //right, no walk
+                FrameStart = 0;
             }
             else
             {
