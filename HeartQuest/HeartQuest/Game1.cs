@@ -106,7 +106,7 @@ namespace HeartQuest
             textBar = Content.Load<Texture2D>("MenuSide");
             textCenter = Content.Load<Texture2D>("Center");
 
-            string[] t = { "Start game", "Info Screen", "Exit" };
+            string[] t = { "Start Game", "Info Screen", "Exit" };
             titleMenu = new Menu(t, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
 
             string[] t2 = { "Heart Quest" };
