@@ -49,6 +49,9 @@ namespace HeartQuest
         // world images
         Texture2D[] playerImages;
         Texture2D[] tileImages;
+        Texture2D healthBack;
+        Texture2D healthFront;
+
 
         public Game1()
         {
@@ -123,6 +126,10 @@ namespace HeartQuest
             playerImages[1] = Content.Load<Texture2D>("PlayerSpriteWalk");
             playerImages[2] = Content.Load<Texture2D>("PlayerSpriteLeft");
             playerImages[3] = Content.Load<Texture2D>("PlayerSpriteLeftWalk");
+
+            healthBack = Content.Load<Texture2D>("HealthBarBackground");
+            healthFront = Content.Load<Texture2D>("HealthBarStatus");
+
             tileImages = new Texture2D[1];
             tileImages[0] = Content.Load<Texture2D>("BaseTile");
 
@@ -151,7 +158,7 @@ namespace HeartQuest
                         if (titleMenu.Selection == 0)
                         {
                             gameState = GameState.PLAYING;
-                            world = new World(tileImages, playerImages);
+                            world = new World(tileImages, playerImages, healthBack, healthFront);
                         }
                         else if (titleMenu.Selection == 1)
                         {

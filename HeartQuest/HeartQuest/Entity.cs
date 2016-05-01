@@ -22,6 +22,18 @@ namespace HeartQuest
                 return new Rectangle((int)Position.X, (int)Position.Y, Images[CurrentImage].Width, Images[CurrentImage].Height);
             }
         }
+        private int health;
+        public int Health
+        {
+            get
+            {
+                return health;
+            }
+            set
+            {
+                health = MathHelper.Clamp(value, 0, 100);
+            }
+        }
         public Entity(Texture2D[] images, Vector2 startPos, int startImage)
         {
             Images = images;
@@ -29,6 +41,7 @@ namespace HeartQuest
             CurrentImage = startImage;
             Velocity = Vector2.Zero;
             IsOnGround = false;
+            health = 76;
         }
 
         public void MoveBy(Vector2 amount)

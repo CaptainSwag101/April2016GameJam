@@ -14,6 +14,8 @@ namespace HeartQuest
         public Tile[,] Tiles { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public Texture2D HealthBack { get; private set; }
+        public Texture2D HealthFront { get; private set; }
         public bool IsPlayerDead
         {
             get
@@ -22,12 +24,15 @@ namespace HeartQuest
             }
         }
 
-        public World(Texture2D[] tileImages, Texture2D[] playerImages)
+        public World(Texture2D[] tileImages, Texture2D[] playerImages, Texture2D healthBack, Texture2D healthFront)
         {
             Width = 25;
             Height = 15;
             Player = new Player(playerImages, new Vector2(100, 100));
             LoadTiles(tileImages);
+            HealthBack = healthBack;
+            HealthFront = healthFront;
+           
         }
 
         private void LoadTiles(Texture2D[] tileImages)
@@ -63,6 +68,7 @@ namespace HeartQuest
             Player.Stop(actualMove.X == 0, actualMove.Y == 0);
 
             Player.MoveBy(actualMove);
+            
         }
 
         private Vector2 CheckCollosions(Vector2 potentialMove)
@@ -95,6 +101,8 @@ namespace HeartQuest
                     }
                 }
             }
+            spriteBatch.Draw(HealthBack, new Rectangle(0, 0, HealthBack.Width, HealthBack.Height), Color.White);
+            spriteBatch.Draw(HealthFront, new Rectangle(0, 0, Player.Health*2, HealthFront.Height), new Rectangle(0, 0, Player.Health * 2, HealthFront.Height), Color.White);
         }
     }
 }
