@@ -1,7 +1,7 @@
 Make game - Noon Monday
 
 *** PARTIAL -- Interactables - Flower pots (Goal of 3 different interacts, add more on Monday.)
-**PARTIAL -- Update sprite animation. move both legs, and reposition hand. Both directions
+
 **PARTIAL -- Good/Evill Bar.
 
 
@@ -14,7 +14,7 @@ Forced walk scenes, story context
 
 Punching System/Combat/Boss
 
-
+Sounds - Background loops, Fire & Forget for menu selection, and game interactions.
 
 Draw new boss and initial friends.
 
@@ -30,3 +30,4 @@ Entity to Entity collision detection.
 .
 Extra Interactables
 
+FINISHED Update sprite animation. move both legs, and reposition hand. Both directions
