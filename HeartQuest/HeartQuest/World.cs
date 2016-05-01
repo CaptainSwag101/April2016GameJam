@@ -49,11 +49,11 @@ namespace HeartQuest
                 {
                     if (x == 0 || x == 24 || y == 0 || (y == 14 && !(x > 7 && x < 10)) || (x > 5 && x < 10 && y == 3))
                     {
-                        Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true);
+                        Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true, false);
                     }
                     else if ((x % 2 == 1) && (x > 1 && x < 24) && y == 13)
                     {
-                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, true, 0, new string[] {"Ignore", "Plant Flower", "Break" } );
+                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] {"Ignore", "Plant Flower", "Break" } );
                     }
                     else
                     {
@@ -129,13 +129,27 @@ namespace HeartQuest
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Player.Draw(spriteBatch);
-
+            // draw background tiles
             for (int x = 0; x < Width; ++x)
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (Tiles[x, y] != null)
+                    if (Tiles[x, y] != null && Tiles[x, y].Background)
+                    {
+                        Tiles[x, y].Draw(spriteBatch);
+                    }
+                }
+            }
+
+            // draw player and other entities
+            Player.Draw(spriteBatch);
+
+            // draw foreground tiles
+            for (int x = 0; x < Width; ++x)
+            {
+                for (int y = 0; y < Height; ++y)
+                {
+                    if (Tiles[x, y] != null && ! Tiles[x, y].Background)
                     {
                         Tiles[x, y].Draw(spriteBatch);
                     }

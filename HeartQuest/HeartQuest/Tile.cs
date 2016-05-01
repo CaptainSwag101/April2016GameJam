@@ -13,6 +13,7 @@ namespace HeartQuest
         public Texture2D[] Images { get; private set; }
         public Vector2 Position { get; private set; }
         public bool IsSolid { get; private set; }
+        public bool Background { get; private set; }
         public bool IsInteractable { get; private set; }
         public int CurrentImage { get; private set; }
         public string[] MenuOptions { get; private set; }
@@ -25,7 +26,7 @@ namespace HeartQuest
             }
         }
 
-        public Tile(Texture2D image, Vector2 position, bool solid)
+        public Tile(Texture2D image, Vector2 position, bool solid, bool background)
         {
             Images = new Texture2D[1];
             Images[0] = image;
@@ -34,10 +35,10 @@ namespace HeartQuest
             IsInteractable = false;
             CurrentImage = 0;
             MenuOptions = new string[0];
-
+            Background = background;
         }
 
-        public Tile(Texture2D[] images, Vector2 position, bool solid, bool interactable, int startImage, string[] menuOptions)
+        public Tile(Texture2D[] images, Vector2 position, bool solid, bool background, bool interactable, int startImage, string[] menuOptions)
         {
             Images = images;
             Position = position;
@@ -45,6 +46,7 @@ namespace HeartQuest
             IsInteractable = interactable;
             CurrentImage = startImage;
             MenuOptions = menuOptions;
+            Background = background;
         }
 
         public void Draw(SpriteBatch spriteBatch)
