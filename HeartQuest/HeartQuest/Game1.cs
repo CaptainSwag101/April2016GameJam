@@ -6,18 +6,49 @@ namespace HeartQuest
 {
     public class Game1 : Game
     {
+        public static Vector2 Gravity = new Vector2(0, 50.0f);
+        World world;
+        GameState gameState = GameState.TITLE_SCREEN;
         GraphicsDeviceManager graphics;
+        SpriteBatch spriteBatch;
+
+        // textures for menus
         Texture2D menuCorner;
         Texture2D menuBar;
         Texture2D menuCenter;
-        SpriteBatch spriteBatch;
-        GameState gameState = GameState.TITLE_SCREEN;
+        Texture2D textCorner;
+        Texture2D textBar;
+        Texture2D textCenter;
+
+        //fonts
         SpriteFont font144;
         SpriteFont font72;
         SpriteFont font16;
         SpriteFont font12;
         SpriteFont font10;
-        Menu menu; // todo move to ui manager
+
+        // menus and text boxes for screens
+        Menu titleMenu;
+        TextDisplayBox titleBox;
+        Menu infoMenu;
+        TextDisplayBox infoBox;
+        Menu victoryMenu;
+        TextDisplayBox victoryBox;
+        Menu gameoverMenu;
+
+        // misc text boxes
+        TextDisplayBox gameoverBox;
+        TextDisplayBox thankYou;
+        TextDisplayBox credits;
+
+        // backgrounds
+        Texture2D titleBG;
+        Texture2D gameoverBG;
+        Texture2D victoryBG;
+
+        // world images
+        Texture2D[] playerImages;
+        Texture2D[] tileImages;
 
         public Game1()
         {
@@ -45,11 +76,53 @@ namespace HeartQuest
             font12 = Content.Load<SpriteFont>("source-sans-12");
             font10 = Content.Load<SpriteFont>("source-sans-10");
 
-            string[] test = {"Start game", "Info Screen"};
+            titleBG = Content.Load<Texture2D>("BackgroundGradRed");
+            gameoverBG = Content.Load<Texture2D>("BackgroundBlack");
+            victoryBG = Content.Load<Texture2D>("BackgroundRed");
+
             menuCorner = Content.Load<Texture2D>("MenuCorner");
             menuBar = Content.Load<Texture2D>("MenuSide");
             menuCenter = Content.Load<Texture2D>("Center");
-            menu = new Menu(test, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
+
+            textCorner = Content.Load<Texture2D>("MenuCorner");
+            textBar = Content.Load<Texture2D>("MenuSide");
+            textCenter = Content.Load<Texture2D>("Center");
+
+            string[] t = { "Start game", "Info Screen", "Exit" };
+            titleMenu = new Menu(t, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
+
+            string[] t2 = { "Heart Quest" };
+            titleBox = new TextDisplayBox(t2, new Vector2(40, 50), textCorner, textBar, textCenter, 45, 10, font72);
+
+            string[] t5 = { "Return to title", "Exit" };
+            infoMenu = new Menu(t5, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
+
+            string[] t6 = { "Made the weekend of April 30 2016", " at a Neumont University Game Jam", "Created by Justin Furtado and Devin Duren", "Special thanks to Blake Dennis (ideas) and Doug Gatto (flowers)" };
+            infoBox = new TextDisplayBox(t6, new Vector2(40, 50), textCorner, textBar, textCenter, 45, 10, font16);
+
+            string[] t7 = { "Return to title", "Exit" };
+            victoryMenu = new Menu(t7, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
+
+            string[] t8 = { "Congratulations!"};
+            victoryBox = new TextDisplayBox(t8, new Vector2(40, 10), textCorner, textBar, textCenter, 45, 10, font72);
+
+            string[] t9 = { "Return to title", "Exit" };
+            gameoverMenu = new Menu(t9, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
+
+            string[] t10 = { "GAME OVER!" };
+            gameoverBox = new TextDisplayBox(t10, new Vector2(40, 10), textCorner, textBar, textCenter, 45, 10, font72);
+
+            string[] t11 = { "Art, programming and sound by Justin Furtado and Devin Duren" };
+            credits = new TextDisplayBox(t11, new Vector2(40, 416), textCorner, textBar, textCenter, 45, 4, font16);
+
+            string[] t12 = { "Thanks for playing, we hope you enjoyed Heart Quest" };
+            thankYou = new TextDisplayBox(t12, new Vector2(40, 170), textCorner, textBar, textCenter, 45, 4, font16);
+
+            playerImages = new Texture2D[1];
+            playerImages[0] = Content.Load<Texture2D>("PlayerSprite");
+            tileImages = new Texture2D[1];
+            tileImages[0] = Content.Load<Texture2D>("BaseTile");
+
         }
         
         protected override void UnloadContent()
@@ -60,99 +133,98 @@ namespace HeartQuest
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
             switch (gameState)
             {
                 case GameState.TITLE_SCREEN:
                     InputManager.Update(gameTime);
-                    menu.ProcessInput();
+                    titleMenu.ProcessInput();
 
-                    if (menu.IsOver)
+                    if (titleMenu.IsOver)
                     {
-                        if (menu.Selection == 0)
+                        if (titleMenu.Selection == 0)
                         {
                             gameState = GameState.PLAYING;
-                            string[] options = { "Win", "Lose" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
+                            world = new World(tileImages, playerImages);
                         }
-                        else if (menu.Selection == 1)
+                        else if (titleMenu.Selection == 1)
                         {
                             gameState = GameState.INFO_SCREEN;
-                            string[] options = { "Return to title", "Break game" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
+                            infoMenu.ResetMenu();
                         }
-                        // TODO handle other options
+                        else if (titleMenu.Selection == 2)
+                        {
+                            Exit();
+                        }
                     }
                     break;
 
                 case GameState.PLAYING:
                     InputManager.Update(gameTime);
-                    menu.ProcessInput();
-
-                    if (menu.IsOver)
+                    world.Update(gameTime);
+                    
+                    if (world.IsPlayerDead)
                     {
-                        if (menu.Selection == 0)
-                        {
-                            gameState = GameState.VICTORY_SCREEN;
-                            string[] options = { "Return to Title", "Break game" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
-                        }
-
-                        if (menu.Selection == 1)
-                        {
-                            gameState = GameState.GAMEOVER_SCREEN;
-                            string[] options = { "Return to title", "Break game" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
-                        }
+                        gameState = GameState.GAMEOVER_SCREEN;
+                        gameoverMenu.ResetMenu();
                     }
                     break;
 
                 case GameState.INFO_SCREEN:
                     InputManager.Update(gameTime);
-                    menu.ProcessInput();
+                    infoMenu.ProcessInput();
 
-                    if (menu.IsOver)
+                    if (infoMenu.IsOver)
                     {
-                        if (menu.Selection == 0)
+                        if (infoMenu.Selection == 0)
                         {
                             gameState = GameState.TITLE_SCREEN;
-                            string[] options = { "Start game", "Info Screen" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
+                            titleMenu.ResetMenu();
                         }
-                        
+                        else if (infoMenu.Selection == 1)
+                        {
+                            Exit();
+                        }
+
                     }
                     break;
 
                 case GameState.VICTORY_SCREEN:
                     InputManager.Update(gameTime);
-                    menu.ProcessInput();
+                    victoryMenu.ProcessInput();
 
-                    if (menu.IsOver)
+                    if (victoryMenu.IsOver)
                     {
-                        if (menu.Selection == 0)
+                        if (victoryMenu.Selection == 0)
                         {
                             gameState = GameState.TITLE_SCREEN;
-                            string[] options = { "Start game", "Info Screen" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
+                            titleMenu.ResetMenu();
                         }
-                        
+                        else if (victoryMenu.Selection == 1)
+                        {
+                            Exit();
+                        }
                     }
                     break;
 
                 case GameState.GAMEOVER_SCREEN:
                     InputManager.Update(gameTime);
-                    menu.ProcessInput();
+                    gameoverMenu.ProcessInput();
 
-                    if (menu.IsOver)
+                    if (gameoverMenu.IsOver)
                     {
-                        if (menu.Selection == 0)
+                        if (gameoverMenu.Selection == 0)
                         {
                             gameState = GameState.TITLE_SCREEN;
-                            string[] options = { "Start game", "Info Screen" };
-                            menu = new Menu(options, menu.Position, menuCorner, menuBar, menuCenter, menu.Width, menu.Height, font16);
+                            titleMenu.ResetMenu();
                         }
-                        
+                        else if (gameoverMenu.Selection == 1)
+                        {
+                            Exit();
+                        }
                     }
                     break;
 
@@ -170,64 +242,37 @@ namespace HeartQuest
             switch (gameState)
             {
                 case GameState.TITLE_SCREEN:
-                    string titleScreenText = "Heart Quest";
-                    Vector2 textDimmensions = font72.MeasureString(titleScreenText);
-                    spriteBatch.DrawString(font72, titleScreenText, new Vector2((GraphicsDevice.Viewport.Width - textDimmensions.X)/2.0f, 50), Color.Black);
-                    string creditsText = "Made by Devin Duren and Justin Furtado";
-                    Vector2 otherText = font16.MeasureString(creditsText);
-                    spriteBatch.DrawString(font16, creditsText, new Vector2((GraphicsDevice.Viewport.Width - otherText.X) / 2.0f, GraphicsDevice.Viewport.Height - 25), Color.Black);
-                    menu.Draw(spriteBatch);
+                    spriteBatch.Draw(titleBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    titleBox.Draw(spriteBatch);
+                    titleMenu.Draw(spriteBatch);
+                    credits.Draw(spriteBatch);
                     break;
 
                 case GameState.PLAYING:
-                    string todo = "INSERT GAME HERE";
-                    Vector2 temp = font72.MeasureString(todo);
-                    spriteBatch.DrawString(font72, todo, new Vector2((GraphicsDevice.Viewport.Width - temp.X) / 2.0f, 50), Color.Black);
-                    menu.Draw(spriteBatch);
-
+                    world.Draw(spriteBatch);
                     break;
 
                 case GameState.INFO_SCREEN:
-                    string infoText = "Made the weekened of April 29 2016 at Neumont University for a Game Jam";
-                    string infoText2 = "Created by Justin Furtado and Devin Duren";
-                    string infoText3 = "Special thanks to Blake Dennis (ideas) and Doug Gatto (motivation/rectangles)";
-                    Vector2 d1 = font16.MeasureString(infoText);
-                    Vector2 d2 = font16.MeasureString(infoText2);
-                    Vector2 d3 = font16.MeasureString(infoText3);
-                    spriteBatch.DrawString(font16, infoText, new Vector2(50, 50), Color.Black);
-                    spriteBatch.DrawString(font16, infoText2, new Vector2(50, 75), Color.Black);
-                    spriteBatch.DrawString(font16, infoText3, new Vector2(50, 100), Color.Black);
-
-                    menu.Draw(spriteBatch);
-
+                    spriteBatch.Draw(titleBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    infoBox.Draw(spriteBatch);
+                    infoMenu.Draw(spriteBatch);
+                    credits.Draw(spriteBatch);
                     break;
 
                 case GameState.VICTORY_SCREEN:
-                    string victoryText = "Conratulations!";
-                    string thanks = "Hope you enjoyed playing HeartQuest.";
-                    Vector2 t1 = font72.MeasureString(victoryText);
-                    Vector2 t2 = font16.MeasureString(thanks);
-                    spriteBatch.DrawString(font72, victoryText, new Vector2((GraphicsDevice.Viewport.Width - t1.X) / 2.0f, 50), Color.Black);
-                    spriteBatch.DrawString(font16, thanks, new Vector2((GraphicsDevice.Viewport.Width - t2.X) / 2.0f, 150), Color.Black);
-                    creditsText = "Made by Devin Duren and Justin Furtado";
-                    otherText = font16.MeasureString(creditsText);
-                    spriteBatch.DrawString(font16, creditsText, new Vector2((GraphicsDevice.Viewport.Width - otherText.X) / 2.0f, GraphicsDevice.Viewport.Height - 25), Color.Black);
-                    menu.Draw(spriteBatch);
-
+                    spriteBatch.Draw(victoryBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    victoryBox.Draw(spriteBatch);
+                    victoryMenu.Draw(spriteBatch);
+                    credits.Draw(spriteBatch);
+                    thankYou.Draw(spriteBatch);
                     break;
 
                 case GameState.GAMEOVER_SCREEN:
-                    string gameOverText = "Game Over!";
-                    thanks = "Hope you enjoyed playing HeartQuest.";
-                    t1 = font72.MeasureString(gameOverText);
-                    t2 = font16.MeasureString(thanks);
-                    spriteBatch.DrawString(font72, gameOverText, new Vector2((GraphicsDevice.Viewport.Width - t1.X) / 2.0f, 50), Color.Black);
-                    spriteBatch.DrawString(font16, thanks, new Vector2((GraphicsDevice.Viewport.Width - t2.X) / 2.0f, 150), Color.Black);
-                    creditsText = "Made by Devin Duren and Justin Furtado";
-                    otherText = font16.MeasureString(creditsText);
-                    spriteBatch.DrawString(font16, creditsText, new Vector2((GraphicsDevice.Viewport.Width - otherText.X) / 2.0f, GraphicsDevice.Viewport.Height - 25), Color.Black);
-                    menu.Draw(spriteBatch);
-
+                    spriteBatch.Draw(gameoverBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    gameoverBox.Draw(spriteBatch);
+                    gameoverMenu.Draw(spriteBatch);
+                    credits.Draw(spriteBatch);
+                    thankYou.Draw(spriteBatch);
                     break;
 
             }

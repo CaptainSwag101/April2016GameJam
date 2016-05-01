@@ -10,29 +10,29 @@ namespace HeartQuest
 {
     static class InputManager
     {
-        public static KeyboardState currentState { get; private set; }
-        public static KeyboardState lastState { get; private set; }
+        public static KeyboardState CurrentState { get; private set; }
+        public static KeyboardState LastState { get; private set; }
 
         public static void Initialize()
         {
-            currentState = Keyboard.GetState();
-            lastState = Keyboard.GetState();
+            CurrentState = Keyboard.GetState();
+            LastState = Keyboard.GetState();
         }
 
         public static void Update(GameTime gameTime)
         {
-            lastState = currentState;
-            currentState = Keyboard.GetState();
+            LastState = CurrentState;
+            CurrentState = Keyboard.GetState();
         }
 
         public static bool KeyPressed(Keys k)
         {
-            return currentState.IsKeyDown(k) && lastState.IsKeyUp(k);
+            return CurrentState.IsKeyDown(k) && LastState.IsKeyUp(k);
         }
 
         public static bool KeyReleased(Keys k)
         {
-            return currentState.IsKeyUp(k) && lastState.IsKeyDown(k);
+            return CurrentState.IsKeyUp(k) && LastState.IsKeyDown(k);
         }
     }
 }

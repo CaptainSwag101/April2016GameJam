@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,47 @@ namespace HeartQuest
 {
     class Tile
     {
-        // represents a single tie in the game world
+        public Texture2D[] Images { get; private set; }
+        public Vector2 Position { get; private set; }
+        public bool IsSolid { get; private set; }
+        public bool IsInteractable { get; private set; }
+        public int CurrentImage { get; private set; }
+        public string[] MenuOptions { get; private set; }
+
+        public Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, Images[CurrentImage].Width, Images[CurrentImage].Height);
+            }
+        }
+
+        public Tile(Texture2D image, Vector2 position, bool solid)
+        {
+            Images = new Texture2D[1];
+            Images[0] = image;
+            Position = position;
+            IsSolid = solid;
+            IsInteractable = false;
+            CurrentImage = 0;
+            MenuOptions = new string[0];
+
+        }
+
+        public Tile(Texture2D[] images, Vector2 position, bool solid, bool interactable, int startImage, string[] menuOptions)
+        {
+            Images = images;
+            Position = position;
+            IsSolid = solid;
+            IsInteractable = interactable;
+            CurrentImage = startImage;
+            MenuOptions = menuOptions;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Images[CurrentImage], Bounds, Color.White);
+        }
+
     }
 }
