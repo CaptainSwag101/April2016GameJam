@@ -16,6 +16,8 @@ namespace HeartQuest
         public int CurrentImage { get; protected set; }
         public bool IsOnGround { get; protected set; }
         public bool IsMoving { get; protected set; }
+        public bool HasHeart { get; set; }
+
         public Rectangle Bounds
         {
             get

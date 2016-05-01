@@ -11,6 +11,7 @@ namespace HeartQuest
     class World
     {
         public Player Player { get; private set; }
+        public Boss Boss { get; private set; }
         public Tile[,] Tiles { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -28,6 +29,26 @@ namespace HeartQuest
             }
         }
 
+        public bool IsBossDead
+        {
+            get
+            {
+                if (Boss == null)
+                {
+                    return true;
+                }
+
+                if (Boss.Health <= 0)
+                {
+                    Boss = null;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         public World(Texture2D[] tileImages, Texture2D[] playerImages, Texture2D healthBack, Texture2D healthFront)
         {
             Width = 25;
@@ -36,7 +57,8 @@ namespace HeartQuest
             LoadTiles(tileImages);
             HealthBack = healthBack;
             HealthFront = healthFront;
-           
+            Boss = new Boss(Game1.bossImages, new Vector2(700, 100), Player);
+
         }
 
         private void LoadTiles(Texture2D[] tileImages)
@@ -47,13 +69,13 @@ namespace HeartQuest
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (x == 0 || x == 24 || y == 0 || (y == 14 && !(x > 7 && x < 10)) || (x > 5 && x < 10 && y == 3))
+                    if (x == 0 || x == 24 || y == 0 || (y == 14) || (x > 5 && x < 10 && y == 3))
                     {
                         Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true, false);
                     }
                     else if ((x % 2 == 1) && (x > 1 && x < 24) && y == 13)
                     {
-                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] {"Ignore", "Plant Flower", "Break" } );
+                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] { "Ignore", "Plant Flower", "Break" });
                     }
                     else
                     {
@@ -71,12 +93,47 @@ namespace HeartQuest
 
             // movement
             Vector2 potentialMove = Player.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            Vector2 actualMove = CheckCollosions(potentialMove);
-
+            Vector2 actualMove = CheckCollosionsFor(Player, potentialMove);
             Player.Stop(actualMove.X == 0, actualMove.Y == 0);
-
             Player.MoveBy(actualMove);
+
+            if (Boss != null)
+            {
+                Boss.Update(gameTime);
+
+                Vector2 bossMove = Boss.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 actualBossMove = CheckCollosionsFor(Boss, bossMove);
+                Boss.Stop(actualBossMove.X == 0, actualBossMove.Y == 0);
+                Boss.MoveBy(actualBossMove);
+
+                // todo, if player hit different enemy
+                if (Player.Punched)
+                {
+                    Player.Punched = false;
+
+                    if (Boss.Bounds.Intersects(new Rectangle(Player.Bounds.X - 16, Player.Bounds.Y, Player.Bounds.Width + 32, Player.Bounds.Height)))
+                    {
+                        if (Player.CurrentImage == 11 || Player.CurrentImage == 9) 
+                        {
+                            if (Boss.Bounds.X < Player.Bounds.X)
+                            {
+                                Boss.Health -= 5;
+                            }
+                        }
+                        else if (Player.CurrentImage == 10 || Player.CurrentImage == 8)
+                        {
+                            if (Boss.Bounds.X > Player.Bounds.X)
+                            {
+                                Boss.Health -= 5;
+                            }
+                        }
+                        if (Boss.Health <= 0)
+                        {
+
+                        }
+                    }
+                }
+            }
 
             // interaction
             if (menu == null)
@@ -89,7 +146,7 @@ namespace HeartQuest
                 if (menu.IsOver)
                 {
                     Tiles[menuBelongsToX, menuBelongsToY].InteractedWith(Player, menu.Selection);
-                    menu = null;   
+                    menu = null;
                 }
             }
         }
@@ -111,16 +168,16 @@ namespace HeartQuest
             }
         }
 
-        private Vector2 CheckCollosions(Vector2 potentialMove)
+        private Vector2 CheckCollosionsFor(Entity e, Vector2 potentialMove)
         {
             Vector2 actualMove = potentialMove;
             for (int x = 0; x < Width; ++x)
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (Tiles[x,y] != null && Tiles[x, y].Bounds.Intersects(new Rectangle((int)(Player.Position.X + actualMove.X), (int)(Player.Position.Y + actualMove.Y), Player.Bounds.Width, Player.Bounds.Height)))
+                    if (Tiles[x, y] != null && Tiles[x, y].Bounds.Intersects(new Rectangle((int)(e.Position.X + actualMove.X), (int)(e.Position.Y + actualMove.Y), e.Bounds.Width, e.Bounds.Height)))
                     {
-                        actualMove = Player.CollideWith(Tiles[x, y], actualMove);
+                        actualMove = e.CollideWith(Tiles[x, y], actualMove);
                     }
                 }
             }
@@ -144,19 +201,34 @@ namespace HeartQuest
             // draw player and other entities
             Player.Draw(spriteBatch);
 
+            if (Boss != null)
+            {
+                Boss.Draw(spriteBatch);
+            }
+
             // draw foreground tiles
             for (int x = 0; x < Width; ++x)
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (Tiles[x, y] != null && ! Tiles[x, y].Background)
+                    if (Tiles[x, y] != null && !Tiles[x, y].Background)
                     {
                         Tiles[x, y].Draw(spriteBatch);
                     }
                 }
             }
-            spriteBatch.Draw(HealthBack, new Rectangle(0, 0, HealthBack.Width, HealthBack.Height), Color.White);
-            spriteBatch.Draw(HealthFront, new Rectangle(0, 0, Player.Health*2, HealthFront.Height), new Rectangle(0, 0, Player.Health * 2, HealthFront.Height), Color.White);
+
+            if (!IsPlayerDead)
+            {
+                spriteBatch.Draw(HealthBack, new Rectangle(0, 0, HealthBack.Width, HealthBack.Height), Color.White);
+                spriteBatch.Draw(HealthFront, new Rectangle(0, 0, Player.Health * 2, HealthFront.Height), new Rectangle(0, 0, Player.Health * 2, HealthFront.Height), Color.White);
+            }
+
+            if (Boss != null)
+            {
+                spriteBatch.Draw(HealthBack, new Rectangle(600, 0, HealthBack.Width, HealthBack.Height), Color.White);
+                spriteBatch.Draw(HealthFront, new Rectangle(600, 0, Boss.Health * 2, HealthFront.Height), new Rectangle(0, 0, Boss.Health * 2, HealthFront.Height), Color.White);
+            }
 
             if (menu != null)
             {

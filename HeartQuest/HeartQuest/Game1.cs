@@ -29,6 +29,8 @@ namespace HeartQuest
         public static SpriteFont font12;
         public static SpriteFont font10;
 
+        public static Texture2D[] bossImages;
+
         // flower pot images
         public static Texture2D[] flowerImages;
 
@@ -121,7 +123,7 @@ namespace HeartQuest
             string[] t7 = { "Return to title", "Exit" };
             victoryMenu = new Menu(t7, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
 
-            string[] t8 = { "Congratulations!"};
+            string[] t8 = { "Congratulations!" };
             victoryBox = new TextDisplayBox(t8, new Vector2(40, 10), textCorner, textBar, textCenter, 45, 10, font72);
 
             string[] t9 = { "Return to title", "Exit" };
@@ -136,11 +138,40 @@ namespace HeartQuest
             string[] t12 = { "Thanks for playing, we hope you enjoyed Heart Quest" };
             thankYou = new TextDisplayBox(t12, new Vector2(40, 170), textCorner, textBar, textCenter, 45, 4, font16);
 
-            playerImages = new Texture2D[4];
+            playerImages = new Texture2D[12];
             playerImages[0] = Content.Load<Texture2D>("PlayerSprite");
             playerImages[1] = Content.Load<Texture2D>("PlayerSpriteWalk");
+
             playerImages[2] = Content.Load<Texture2D>("PlayerSpriteLeft");
             playerImages[3] = Content.Load<Texture2D>("PlayerSpriteLeftWalk");
+
+            playerImages[4] = Content.Load<Texture2D>("PlayerSpriteBlack");
+            playerImages[5] = Content.Load<Texture2D>("PlayerSpriteWalkBlack");
+
+            playerImages[6] = Content.Load<Texture2D>("PlayerSpriteLeftBlack");
+            playerImages[7] = Content.Load<Texture2D>("PlayerSpriteLeftWalkBlack");
+
+            playerImages[8] = Content.Load<Texture2D>("PlayerSpritePunch");
+            playerImages[9] = Content.Load<Texture2D>("PlayerSpriteLeftPunch");
+
+            playerImages[10] = Content.Load<Texture2D>("PlayerSpriteBlackPunch");
+            playerImages[11] = Content.Load<Texture2D>("PlayerSpriteLeftBlackPunch");
+
+
+            bossImages = new Texture2D[12];
+            bossImages[0] = Content.Load<Texture2D>("BossSprite");
+            bossImages[1] = Content.Load<Texture2D>("BossSpriteWalk");
+            bossImages[2] = Content.Load<Texture2D>("BossSpriteLeft");
+            bossImages[3] = Content.Load<Texture2D>("BossSpriteLeftWalk");
+            bossImages[4] = Content.Load<Texture2D>("BossSpriteBlack");
+            bossImages[5] = Content.Load<Texture2D>("BossSpriteWalkBlack");
+            bossImages[6] = Content.Load<Texture2D>("BossSpriteLeftBlack");
+            bossImages[7] = Content.Load<Texture2D>("BossSpriteLeftWalkBlack");
+            bossImages[8] = Content.Load<Texture2D>("bossSpritePunch");
+            bossImages[9] = Content.Load<Texture2D>("bossSpriteLeftPunch");
+            bossImages[10] = Content.Load<Texture2D>("bossSpriteBlackPunch");
+            bossImages[11] = Content.Load<Texture2D>("bossSpriteLeftBlackPunch");
+
 
             healthBack = Content.Load<Texture2D>("HealthBarBackground");
             healthFront = Content.Load<Texture2D>("HealthBarStatus");
@@ -156,7 +187,7 @@ namespace HeartQuest
             menuLoop = (Content.Load<SoundEffect>("title1")).CreateInstance();
             bossLoop = (Content.Load<SoundEffect>("bossv1")).CreateInstance();
             roamLoop = (Content.Load<SoundEffect>("roam1")).CreateInstance();
-            
+
             menuLoop.IsLooped = true;
             menuLoop.Play();
             bossLoop.IsLooped = true;
@@ -217,12 +248,21 @@ namespace HeartQuest
                 case GameState.PLAYING:
                     InputManager.Update(gameTime);
                     world.Update(gameTime);
-                    
+
                     if (world.IsPlayerDead)
                     {
                         death.Play();
                         gameState = GameState.GAMEOVER_SCREEN;
                         gameoverMenu.ResetMenu();
+                        roamLoop.Stop();
+                        menuLoop.Play();
+                    }
+
+                    if (world.IsBossDead)
+                    {
+                        gameState = GameState.VICTORY_SCREEN;
+                        victoryMenu.ResetMenu();
+                        // todo replace w/ boss music
                         roamLoop.Stop();
                         menuLoop.Play();
                     }
