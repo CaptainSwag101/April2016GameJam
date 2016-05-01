@@ -6,7 +6,7 @@ namespace HeartQuest
 {
     public class Game1 : Game
     {
-        public static Vector2 Gravity = new Vector2(0, 50.0f);
+        public static Vector2 Gravity = new Vector2(0, 100.0f);
         World world;
         GameState gameState = GameState.TITLE_SCREEN;
         GraphicsDeviceManager graphics;
@@ -97,7 +97,7 @@ namespace HeartQuest
             string[] t5 = { "Return to title", "Exit" };
             infoMenu = new Menu(t5, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
 
-            string[] t6 = { "Made the weekend of April 30 2016", " at a Neumont University Game Jam", "Created by Justin Furtado and Devin Duren", "Special thanks to Blake Dennis (ideas) and Doug Gatto (flowers)" };
+            string[] t6 = { "Made the weekend of April 30, 2016", " at a Neumont University Game Jam", "Created by Justin Furtado and Devin Duren", "Special thanks to Blake Dennis (ideas) and Doug Gatto (flowers)" };
             infoBox = new TextDisplayBox(t6, new Vector2(40, 50), textCorner, textBar, textCenter, 45, 10, font16);
 
             string[] t7 = { "Return to title", "Exit" };
@@ -118,8 +118,11 @@ namespace HeartQuest
             string[] t12 = { "Thanks for playing, we hope you enjoyed Heart Quest" };
             thankYou = new TextDisplayBox(t12, new Vector2(40, 170), textCorner, textBar, textCenter, 45, 4, font16);
 
-            playerImages = new Texture2D[1];
+            playerImages = new Texture2D[4];
             playerImages[0] = Content.Load<Texture2D>("PlayerSprite");
+            playerImages[1] = Content.Load<Texture2D>("PlayerSpriteWalk");
+            playerImages[2] = Content.Load<Texture2D>("PlayerSpriteLeft");
+            playerImages[3] = Content.Load<Texture2D>("PlayerSpriteLeftWalk");
             tileImages = new Texture2D[1];
             tileImages[0] = Content.Load<Texture2D>("BaseTile");
 

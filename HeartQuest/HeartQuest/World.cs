@@ -52,6 +52,8 @@ namespace HeartQuest
 
         public void Update(GameTime gameTime)
         {
+            //todo good/evil bar. Using GoodStatusBar.png and BadStatusBar.png
+
             Player.Update(gameTime);
 
             Vector2 potentialMove = Player.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
