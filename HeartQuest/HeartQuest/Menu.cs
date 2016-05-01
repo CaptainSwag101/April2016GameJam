@@ -49,17 +49,21 @@ namespace HeartQuest
             {
                 if (InputManager.KeyPressed(Keys.Down))
                 {
+                    Game1.menuSelection.Play();
                     Selection = (Selection + 1) % Options.Length;
                 }
 
                 if (InputManager.KeyPressed(Keys.Up)) 
                 {
+
+                    Game1.menuSelection.Play();
                     Selection--;
                     if (Selection < 0) Selection = Options.Length - 1;
                 }
 
                 if (InputManager.KeyPressed(Keys.Enter))
                 {
+                    Game1.menuSelection.Play();
                     IsOver = true;
                 }
             }

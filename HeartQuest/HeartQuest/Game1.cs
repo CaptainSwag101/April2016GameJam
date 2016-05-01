@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace HeartQuest
 {
@@ -55,6 +57,16 @@ namespace HeartQuest
         Texture2D healthBack;
         Texture2D healthFront;
 
+        // sounds
+        SoundEffectInstance bossLoop;
+        SoundEffectInstance roamLoop;
+        SoundEffectInstance menuLoop;
+        // static sounds
+        public static SoundEffect jump;
+        public static SoundEffect death;
+        public static SoundEffect hurt;
+        public static SoundEffect menuSelection;
+        public static SoundEffect potBreak;
 
         public Game1()
         {
@@ -141,12 +153,30 @@ namespace HeartQuest
             flowerImages[1] = Content.Load<Texture2D>("Flower");
             flowerImages[2] = Content.Load<Texture2D>("CrushedPot");
 
+            menuLoop = (Content.Load<SoundEffect>("title1")).CreateInstance();
+            bossLoop = (Content.Load<SoundEffect>("bossv1")).CreateInstance();
+            roamLoop = (Content.Load<SoundEffect>("roam1")).CreateInstance();
+            
+            menuLoop.IsLooped = true;
+            menuLoop.Play();
+            bossLoop.IsLooped = true;
+            roamLoop.IsLooped = true;
+
+            death = Content.Load<SoundEffect>("death");
+            menuSelection = Content.Load<SoundEffect>("menuselect");
+            hurt = Content.Load<SoundEffect>("hurt");
+            potBreak = Content.Load<SoundEffect>("potbreak1");
+            jump = Content.Load<SoundEffect>("jump");
+
 
         }
 
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            menuLoop.Dispose();
+            bossLoop.Dispose();
+            roamLoop.Dispose();
         }
 
         protected override void Update(GameTime gameTime)
@@ -168,6 +198,8 @@ namespace HeartQuest
                         {
                             gameState = GameState.PLAYING;
                             world = new World(tileImages, playerImages, healthBack, healthFront);
+                            menuLoop.Stop();
+                            roamLoop.Play();
                         }
                         else if (titleMenu.Selection == 1)
                         {
@@ -176,6 +208,7 @@ namespace HeartQuest
                         }
                         else if (titleMenu.Selection == 2)
                         {
+                            menuLoop.Stop();
                             Exit();
                         }
                     }
@@ -187,8 +220,11 @@ namespace HeartQuest
                     
                     if (world.IsPlayerDead)
                     {
+                        death.Play();
                         gameState = GameState.GAMEOVER_SCREEN;
                         gameoverMenu.ResetMenu();
+                        roamLoop.Stop();
+                        menuLoop.Play();
                     }
                     break;
 
@@ -205,6 +241,7 @@ namespace HeartQuest
                         }
                         else if (infoMenu.Selection == 1)
                         {
+                            menuLoop.Stop();
                             Exit();
                         }
 
@@ -224,6 +261,7 @@ namespace HeartQuest
                         }
                         else if (victoryMenu.Selection == 1)
                         {
+                            menuLoop.Stop();
                             Exit();
                         }
                     }
@@ -242,6 +280,7 @@ namespace HeartQuest
                         }
                         else if (gameoverMenu.Selection == 1)
                         {
+                            menuLoop.Stop();
                             Exit();
                         }
                     }

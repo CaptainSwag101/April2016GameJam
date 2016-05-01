@@ -32,6 +32,10 @@ namespace HeartQuest
             }
             set
             {
+                if(value < health)
+                {
+                    Game1.hurt.Play();
+                }
                 health = MathHelper.Clamp(value, 0, 100);
             }
         }

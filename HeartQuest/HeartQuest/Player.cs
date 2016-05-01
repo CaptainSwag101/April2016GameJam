@@ -31,6 +31,7 @@ namespace HeartQuest
 
             if (InputManager.KeyPressed(Keys.W) && IsOnGround)
             {
+                Game1.jump.Play();
                 Velocity = new Vector2(Velocity.X, -100.0f);
                 IsOnGround = false;
             }

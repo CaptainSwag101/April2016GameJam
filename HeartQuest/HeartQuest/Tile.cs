@@ -65,6 +65,8 @@ namespace HeartQuest
                 }
                 else if (selection == 2)
                 {
+                    //TODO if this is a flower, play sound.
+                    Game1.potBreak.Play();
                     IsInteractable = false;
                     p.Health -= 10;
                 }
