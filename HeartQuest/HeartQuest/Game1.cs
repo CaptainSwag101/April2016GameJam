@@ -13,19 +13,22 @@ namespace HeartQuest
         SpriteBatch spriteBatch;
 
         // textures for menus
-        Texture2D menuCorner;
-        Texture2D menuBar;
-        Texture2D menuCenter;
-        Texture2D textCorner;
-        Texture2D textBar;
-        Texture2D textCenter;
+        public static Texture2D menuCorner;
+        public static Texture2D menuBar;
+        public static Texture2D menuCenter;
+        public static Texture2D textCorner;
+        public static Texture2D textBar;
+        public static Texture2D textCenter;
 
         //fonts
-        SpriteFont font144;
-        SpriteFont font72;
-        SpriteFont font16;
-        SpriteFont font12;
-        SpriteFont font10;
+        public static SpriteFont font144;
+        public static SpriteFont font72;
+        public static SpriteFont font16;
+        public static SpriteFont font12;
+        public static SpriteFont font10;
+
+        // flower pot images
+        public static Texture2D[] flowerImages;
 
         // menus and text boxes for screens
         Menu titleMenu;
@@ -133,8 +136,14 @@ namespace HeartQuest
             tileImages = new Texture2D[1];
             tileImages[0] = Content.Load<Texture2D>("BaseTile");
 
+            flowerImages = new Texture2D[3];
+            flowerImages[0] = Content.Load<Texture2D>("Pot");
+            flowerImages[1] = Content.Load<Texture2D>("Flower");
+            flowerImages[2] = Content.Load<Texture2D>("CrushedPot");
+
+
         }
-        
+
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here

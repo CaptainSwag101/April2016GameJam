@@ -52,5 +52,25 @@ namespace HeartQuest
             spriteBatch.Draw(Images[CurrentImage], Bounds, Color.White);
         }
 
+        public void InteractedWith(Player p, int selection)
+        {
+            if (IsInteractable)
+            {
+                CurrentImage = selection;
+
+                if (selection == 1)
+                {
+                    IsInteractable = false;
+                    p.Health += 10;
+                }
+                else if (selection == 2)
+                {
+                    IsInteractable = false;
+                    p.Health -= 10;
+                }
+
+            }
+        }
+
     }
 }

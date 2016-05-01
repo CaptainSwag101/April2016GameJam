@@ -16,11 +16,15 @@ namespace HeartQuest
         public int Height { get; private set; }
         public Texture2D HealthBack { get; private set; }
         public Texture2D HealthFront { get; private set; }
+        private Menu menu;
+        private int menuBelongsToX;
+        private int menuBelongsToY;
+
         public bool IsPlayerDead
         {
             get
             {
-                return Player.Bounds.Top > 500;
+                return Player.Bounds.Top > 500 || Player.Health <= 0;
             }
         }
 
@@ -47,6 +51,10 @@ namespace HeartQuest
                     {
                         Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true);
                     }
+                    else if ((x % 2 == 1) && (x > 1 && x < 24) && y == 13)
+                    {
+                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, true, 0, new string[] {"Ignore", "Plant Flower", "Break" } );
+                    }
                     else
                     {
                         Tiles[x, y] = null;
@@ -61,6 +69,7 @@ namespace HeartQuest
 
             Player.Update(gameTime);
 
+            // movement
             Vector2 potentialMove = Player.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             Vector2 actualMove = CheckCollosions(potentialMove);
@@ -68,7 +77,38 @@ namespace HeartQuest
             Player.Stop(actualMove.X == 0, actualMove.Y == 0);
 
             Player.MoveBy(actualMove);
-            
+
+            // interaction
+            if (menu == null)
+            {
+                CheckInteractions();
+            }
+            else
+            {
+                menu.ProcessInput();
+                if (menu.IsOver)
+                {
+                    Tiles[menuBelongsToX, menuBelongsToY].InteractedWith(Player, menu.Selection);
+                    menu = null;   
+                }
+            }
+        }
+
+        private void CheckInteractions()
+        {
+            for (int x = 0; x < Width; ++x)
+            {
+                for (int y = 0; y < Height; ++y)
+                {
+                    if (Tiles[x, y] != null && Player.Bounds.Intersects(Tiles[x, y].Bounds) && Tiles[x, y].IsInteractable && InputManager.KeyPressed(Microsoft.Xna.Framework.Input.Keys.Space))
+                    {
+                        menu = new Menu(Tiles[x, y].MenuOptions, new Vector2(240, 240), Game1.menuCorner, Game1.menuBar, Game1.menuCenter, 20, 10, Game1.font16);
+                        menuBelongsToX = x;
+                        menuBelongsToY = y;
+                        return;
+                    }
+                }
+            }
         }
 
         private Vector2 CheckCollosions(Vector2 potentialMove)
@@ -103,6 +143,11 @@ namespace HeartQuest
             }
             spriteBatch.Draw(HealthBack, new Rectangle(0, 0, HealthBack.Width, HealthBack.Height), Color.White);
             spriteBatch.Draw(HealthFront, new Rectangle(0, 0, Player.Health*2, HealthFront.Height), new Rectangle(0, 0, Player.Health * 2, HealthFront.Height), Color.White);
+
+            if (menu != null)
+            {
+                menu.Draw(spriteBatch);
+            }
         }
     }
 }
