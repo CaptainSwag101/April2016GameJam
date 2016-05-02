@@ -4,19 +4,21 @@ Make game - Noon Monday
 
 **PARTIAL -- Good/Evill Bar.
 
+Replace sides with trees/not dirt.
 
+Devin - Tree sides, and partial transparent leaves. 
+	Forest datrk background...
+	Friend - 4 frames left, leftwalk, right, rightwalk.
+	
 
 Forced walk scenes, story context
 	TREES IN FOREST
 		Semi-Transparent Black rect
 		Backgrounf of tiled trees
-	bool IsTiledBackground for controlling layering.
-
-Punching System/Combat/Boss
 
 Sounds - Background loops, Fire & Forget for menu selection, and game interactions.
 
-Draw new boss and initial friends.
+IN PROGRESS Draw new boss and initial friends.
 
 Entity to Entity collision detection. 
 
@@ -29,5 +31,10 @@ Entity to Entity collision detection.
 .
 .
 Extra Interactables
+
+
+FINISHED Punching System/Combat/Boss
+
+FINISHED bool IsTiledBackground for controlling layering.
 
 FINISHED Update sprite animation. move both legs, and reposition hand. Both directions
