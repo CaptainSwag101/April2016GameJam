@@ -180,9 +180,7 @@ namespace HeartQuest
                 }
             }
 
-            Player.Update(gameTime);
-
-            if (Player.Health >= Boss.Health)
+            if (Player.Health > Boss.Health)
             {
                 Player.HasHeart = true;
                 Boss.HasHeart = false;
@@ -192,6 +190,8 @@ namespace HeartQuest
                 Player.HasHeart = false;
                 Boss.HasHeart = true;
             }
+
+            Player.Update(gameTime);
 
             // movement
             Vector2 potentialMove = Player.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
