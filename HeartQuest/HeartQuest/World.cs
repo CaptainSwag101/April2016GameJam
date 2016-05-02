@@ -133,6 +133,8 @@ namespace HeartQuest
                                 continueMenu = null;
                                 displayBox = null;
                                 Player.Cutscene = false;
+                                Game1.roamLoop.Stop();
+                                Game1.bossLoop.Play();
                                 return;
                             }
 
@@ -153,6 +155,8 @@ namespace HeartQuest
                 }
             }
 
+            Player.Update(gameTime);
+
             if (Player.Health >= Boss.Health)
             {
                 Player.HasHeart = true;
@@ -163,8 +167,6 @@ namespace HeartQuest
                 Player.HasHeart = false;
                 Boss.HasHeart = true;
             }
-
-            Player.Update(gameTime);
 
             // movement
             Vector2 potentialMove = Player.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;

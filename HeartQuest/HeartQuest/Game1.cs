@@ -65,9 +65,9 @@ namespace HeartQuest
 
 
         // sounds
-        SoundEffectInstance bossLoop;
-        SoundEffectInstance roamLoop;
-        SoundEffectInstance menuLoop;
+        public static SoundEffectInstance bossLoop;
+        public static SoundEffectInstance roamLoop;
+        public static SoundEffectInstance menuLoop;
 
         // static sounds
         public static SoundEffect jump;
@@ -174,10 +174,10 @@ namespace HeartQuest
             bossImages[5] = Content.Load<Texture2D>("BossSpriteWalkBlack");
             bossImages[6] = Content.Load<Texture2D>("BossSpriteLeftBlack");
             bossImages[7] = Content.Load<Texture2D>("BossSpriteLeftWalkBlack");
-            bossImages[8] = Content.Load<Texture2D>("bossSpritePunch");
-            bossImages[9] = Content.Load<Texture2D>("bossSpriteLeftPunch");
-            bossImages[10] = Content.Load<Texture2D>("bossSpriteBlackPunch");
-            bossImages[11] = Content.Load<Texture2D>("bossSpriteLeftBlackPunch");
+            bossImages[8] = Content.Load<Texture2D>("BossSpritePunch");
+            bossImages[9] = Content.Load<Texture2D>("BossSpriteLeftPunch");
+            bossImages[10] = Content.Load<Texture2D>("BossSpriteBlackPunch");
+            bossImages[11] = Content.Load<Texture2D>("BossSpriteLeftBlackPunch");
 
 
             healthBack = Content.Load<Texture2D>("HealthBarBackground");
@@ -267,7 +267,7 @@ namespace HeartQuest
                         death.Play();
                         gameState = GameState.GAMEOVER_SCREEN;
                         gameoverMenu.ResetMenu();
-                        roamLoop.Stop();
+                        bossLoop.Stop();
                         menuLoop.Play();
                     }
 
@@ -276,7 +276,7 @@ namespace HeartQuest
                         gameState = GameState.VICTORY_SCREEN;
                         victoryMenu.ResetMenu();
                         // todo replace w/ boss music
-                        roamLoop.Stop();
+                        bossLoop.Stop();
                         menuLoop.Play();
                     }
                     break;

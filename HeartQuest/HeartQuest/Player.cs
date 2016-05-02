@@ -56,7 +56,7 @@ namespace HeartQuest
                     if (HasHeart)
                     {
                         // if already punching left or facing left
-                        if (CurrentImage == 9 || CurrentImage == 2 || CurrentImage == 3 || CurrentImage == 6 || CurrentImage == 7)
+                        if (CurrentImage == 9 || CurrentImage == 11 || CurrentImage == 2 || CurrentImage == 3 || CurrentImage == 6 || CurrentImage == 7)
                         {
                             // punch left
                             CurrentImage = 9;
@@ -70,7 +70,7 @@ namespace HeartQuest
                     else
                     {
                         // if already punching left or facing left
-                        if (CurrentImage == 11 || CurrentImage == 6 || CurrentImage == 7 || CurrentImage == 2 || CurrentImage == 3)
+                        if (CurrentImage == 9 || CurrentImage == 11 || CurrentImage == 6 || CurrentImage == 7 || CurrentImage == 2 || CurrentImage == 3)
                         {
                             //punch left
                             CurrentImage = 11;
