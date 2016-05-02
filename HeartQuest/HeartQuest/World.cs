@@ -17,6 +17,14 @@ namespace HeartQuest
         public int Height { get; private set; }
         public Texture2D HealthBack { get; private set; }
         public Texture2D HealthFront { get; private set; }
+        public string[][] CutsceneText { get; private set; }
+        public int CutsceneNum { get; private set; }
+        private int distBetweenScenes = 32;
+        private int startX;
+        private Menu continueMenu;
+        private TextDisplayBox displayBox;
+
+
         private Menu menu;
         private int menuBelongsToX;
         private int menuBelongsToY;
@@ -35,7 +43,7 @@ namespace HeartQuest
             {
                 if (Boss == null)
                 {
-                    return true;
+                    return false;
                 }
 
                 if (Boss.Health <= 0)
@@ -53,12 +61,20 @@ namespace HeartQuest
         {
             Width = 25;
             Height = 15;
-            Player = new Player(playerImages, new Vector2(100, 100));
+            Player = new Player(playerImages, new Vector2(450, 384));
             LoadTiles(tileImages);
             HealthBack = healthBack;
             HealthFront = healthFront;
-            Boss = new Boss(Game1.bossImages, new Vector2(700, 100), Player);
-
+            Boss = new Boss(Game1.bossImages, new Vector2(350, 384), Player);
+            CutsceneText = new string[4][];
+            CutsceneText[0] = new string[] { "Hey, friend. Its quite a nice night isn't it?", "Wait... What's that over there?" };
+            CutsceneText[1] = new string[] { "*He punches you in the heart while you are distracted*" };
+            CutsceneText[2] = new string[] { "Finally! A heart of my own!" };
+            CutsceneText[3] = new string[] { "Dude, not cool!" };
+            CutsceneNum = 0;
+            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(40, 50), Game1.textCorner, Game1.textBar, Game1.textCenter, 45, 10, Game1.font16);
+            continueMenu = new Menu(new string[] { "Continue" }, new Vector2(240, 240), Game1.menuCorner, Game1.menuBar, Game1.menuCenter, 20, 5, Game1.font16);
+            startX = Player.Bounds.X + 32;
         }
 
         private void LoadTiles(Texture2D[] tileImages)
@@ -69,11 +85,23 @@ namespace HeartQuest
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (x == 0 || x == 24 || y == 0 || (y == 14) || (x > 5 && x < 10 && y == 3))
+                    if (y == 14) // bottom wall
                     {
                         Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true, false);
                     }
-                    else if ((x % 2 == 1) && (x > 1 && x < 24) && y == 13)
+                    else if (x == 24) // right wall
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, true, false);
+                    }
+                    else if (y == 0) // top wall
+                    {
+                        Tiles[x, y] = new Tile(tileImages[2], new Vector2(x, y) * 32.0f, true, false);
+                    }
+                    else if (x == 0) // left wall
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, true, false);
+                    }
+                    else if (false)
                     {
                         Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] { "Ignore", "Plant Flower", "Break" });
                     }
@@ -87,7 +115,54 @@ namespace HeartQuest
 
         public void Update(GameTime gameTime)
         {
-            //todo good/evil bar. Using GoodStatusBar.png and BadStatusBar.png
+            if (Player.Cutscene)
+            {
+                if (Math.Abs(Player.Bounds.X - startX) >= distBetweenScenes)
+                {
+                    Player.Velocity = Vector2.Zero;
+
+                    if (continueMenu != null)
+                    {
+                        continueMenu.ProcessInput();
+
+                        if (continueMenu.IsOver)
+                        {
+                            CutsceneNum++;
+                            if (CutsceneNum >= CutsceneText.Length)
+                            {
+                                continueMenu = null;
+                                displayBox = null;
+                                Player.Cutscene = false;
+                                return;
+                            }
+
+                            if (CutsceneNum == 2)
+                            {
+                                Player.Health -= 5;
+                            }
+
+                            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(40, 50), Game1.textCorner, Game1.textBar, Game1.textCenter, 45, 10, Game1.font16);
+                            continueMenu.ResetMenu();
+                            startX = Player.Bounds.X;
+                        }
+                    }
+                }
+                else
+                {
+                    Player.Velocity = new Vector2(-50.0f, 0);
+                }
+            }
+
+            if (Player.Health >= Boss.Health)
+            {
+                Player.HasHeart = true;
+                Boss.HasHeart = false;
+            }
+            else
+            {
+                Player.HasHeart = false;
+                Boss.HasHeart = true;
+            }
 
             Player.Update(gameTime);
 
@@ -127,10 +202,7 @@ namespace HeartQuest
                                 Boss.Health -= 5;
                             }
                         }
-                        if (Boss.Health <= 0)
-                        {
-
-                        }
+                      
                     }
                 }
             }
@@ -230,9 +302,22 @@ namespace HeartQuest
                 spriteBatch.Draw(HealthFront, new Rectangle(600, 0, Boss.Health * 2, HealthFront.Height), new Rectangle(0, 0, Boss.Health * 2, HealthFront.Height), Color.White);
             }
 
+            spriteBatch.Draw(Game1.blackRect, Game1.screenBounds, Color.White * 0.5f);
+
+
             if (menu != null)
             {
                 menu.Draw(spriteBatch);
+            }
+
+            if (continueMenu != null)
+            {
+                continueMenu.Draw(spriteBatch);
+            }
+
+            if (displayBox != null)
+            {
+                displayBox.Draw(spriteBatch);
             }
         }
     }

@@ -20,67 +20,110 @@ namespace HeartQuest
         public Boss(Texture2D[] images, Vector2 startPos, Player target) : base(images, startPos, 0)
         {
             this.target = target;
-            HasHeart = true;
         }
 
         public override void Update(GameTime gameTime)
         {
-            punchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (!target.Cutscene)
+            { 
+                punchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (!punching && target.Bounds.Intersects(new Rectangle(Bounds.X - 16, Bounds.Y, Bounds.Width + 32, Bounds.Height)))
-            {
-                if (punchTimer > punchTime)
+                if (!punching && target.Bounds.Intersects(new Rectangle(Bounds.X - 16, Bounds.Y, Bounds.Width + 32, Bounds.Height)))
                 {
-                    punchTimer = 0.0f;
-                    punching = true;
-                    target.Health -= 5;
-                }
-            }
-            else
-            {
-                if (punchTimer > punchTime)
-                {
-                    punchTimer = 0.0f;
-                    punching = false;
-                }
-            }
-
-            if (punching)
-            {
-                Velocity = new Vector2(0, Velocity.Y);
-
-                if (HasHeart)
-                {
-                    // if already punching left or facing left
-                    if (target.Position.X < Position.X)
+                    if (punchTimer > punchTime)
                     {
-                        // punch left
-                        CurrentImage = 9;
-                    }
-                    else
-                    {
-                        // punch right
-                        CurrentImage = 8;
+                        punchTimer = 0.0f;
+                        punching = true;
+                        target.Health -= 5;
                     }
                 }
                 else
                 {
-                    // if already punching left or facing left
-                    if (target.Position.X < Position.X)
+                    if (punchTimer > punchTime)
                     {
-                        //punch left
-                        CurrentImage = 11;
+                        punchTimer = 0.0f;
+                        punching = false;
+                    }
+                }
+
+                if (punching)
+                {
+                    Velocity = new Vector2(0, Velocity.Y);
+
+                    if (HasHeart)
+                    {
+                        // if already punching left or facing left
+                        if (target.Position.X < Position.X)
+                        {
+                            // punch left
+                            CurrentImage = 9;
+                        }
+                        else
+                        {
+                            // punch right
+                            CurrentImage = 8;
+                        }
                     }
                     else
                     {
-                        // punch right
-                        CurrentImage = 10;
+                        // if already punching left or facing left
+                        if (target.Position.X < Position.X)
+                        {
+                            //punch left
+                            CurrentImage = 11;
+                        }
+                        else
+                        {
+                            // punch right
+                            CurrentImage = 10;
+                        }
                     }
+                }
+                else
+                {
+                    IsMoving = target.Bounds.Right < Bounds.Left || target.Bounds.Left > Bounds.Right;
+                    int walkCount = 0;
+
+                    if (IsMoving)
+                    {
+                        walkCount = (int)(gameTime.TotalGameTime.TotalSeconds * 10) % 2;
+                    }
+
+                    CurrentImage = walkCount + FrameStart + (HasHeart ? 0 : 4);
+
+                    if ((Vector2.Distance(target.Position, this.Position) > (1.5f * 32.0f)) && (Vector2.Distance(target.Position, this.Position) < (3.5f * 32.0f)) && (IsOnGround))
+                    {
+                        Game1.jump.Play();
+                        Velocity = new Vector2(Velocity.X, -110.0f);
+                        IsOnGround = false;
+                    }
+
+                    if (target.Bounds.Right < Bounds.Left)
+                    {
+                        //LastFrameStart = FrameStart;
+                        //change to left pic
+                        Velocity = new Vector2(-30.0f, Velocity.Y);
+                        IsOnGround = false;
+                        FrameStart = 2; //left, no walk
+                    }
+                    else if (target.Bounds.Left > Bounds.Right)
+                    {
+                        //change to right pic
+                        Velocity = new Vector2(30.0f, Velocity.Y);
+                        IsOnGround = false;
+                        FrameStart = 0;
+                    }
+                    else
+                    {
+                        Velocity = new Vector2(0, Velocity.Y);
+                    }
+
                 }
             }
             else
             {
-                IsMoving = target.Bounds.Right < Bounds.Left || target.Bounds.Left > Bounds.Right;
+                Velocity = new Vector2(-target.Velocity.X, target.Velocity.Y);
+                // cutscene
                 int walkCount = 0;
 
                 if (IsMoving)
@@ -90,33 +133,14 @@ namespace HeartQuest
 
                 CurrentImage = walkCount + FrameStart + (HasHeart ? 0 : 4);
 
-                if ((Vector2.Distance(target.Position, this.Position) > (1.5f * 32.0f)) && (Vector2.Distance(target.Position, this.Position) < (3.5f * 32.0f)) && (IsOnGround))
+                if (Velocity.X < 0)
                 {
-                    Game1.jump.Play();
-                    Velocity = new Vector2(Velocity.X, -110.0f);
-                    IsOnGround = false;
-                }
-
-                if (target.Bounds.Right < Bounds.Left)
-                {
-                    //LastFrameStart = FrameStart;
-                    //change to left pic
-                    Velocity = new Vector2(-30.0f, Velocity.Y);
-                    IsOnGround = false;
                     FrameStart = 2; //left, no walk
                 }
-                else if (target.Bounds.Left > Bounds.Right)
+                else if (Velocity.X > 0)
                 {
-                    //change to right pic
-                    Velocity = new Vector2(30.0f, Velocity.Y);
-                    IsOnGround = false;
                     FrameStart = 0;
                 }
-                else
-                {
-                    Velocity = new Vector2(0, Velocity.Y);
-                }
-
             }
 
             base.Update(gameTime);

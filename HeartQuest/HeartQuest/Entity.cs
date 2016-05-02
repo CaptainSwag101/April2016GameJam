@@ -12,7 +12,7 @@ namespace HeartQuest
     {
         public Texture2D[] Images { get; protected set; }
         public Vector2 Position { get; protected set; }
-        public Vector2 Velocity { get; protected set; }
+        public Vector2 Velocity { get; set; }
         public int CurrentImage { get; protected set; }
         public bool IsOnGround { get; protected set; }
         public bool IsMoving { get; protected set; }

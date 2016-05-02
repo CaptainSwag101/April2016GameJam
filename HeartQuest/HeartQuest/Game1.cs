@@ -22,6 +22,8 @@ namespace HeartQuest
         public static Texture2D textBar;
         public static Texture2D textCenter;
 
+        public static Rectangle screenBounds;
+
         //fonts
         public static SpriteFont font144;
         public static SpriteFont font72;
@@ -52,23 +54,28 @@ namespace HeartQuest
         Texture2D titleBG;
         Texture2D gameoverBG;
         Texture2D victoryBG;
+        Texture2D gameBG;
 
         // world images
         Texture2D[] playerImages;
         Texture2D[] tileImages;
         Texture2D healthBack;
         Texture2D healthFront;
+        public static Texture2D blackRect;
+
 
         // sounds
         SoundEffectInstance bossLoop;
         SoundEffectInstance roamLoop;
         SoundEffectInstance menuLoop;
+
         // static sounds
         public static SoundEffect jump;
         public static SoundEffect death;
         public static SoundEffect hurt;
         public static SoundEffect menuSelection;
         public static SoundEffect potBreak;
+
 
         public Game1()
         {
@@ -176,8 +183,10 @@ namespace HeartQuest
             healthBack = Content.Load<Texture2D>("HealthBarBackground");
             healthFront = Content.Load<Texture2D>("HealthBarStatus");
 
-            tileImages = new Texture2D[1];
-            tileImages[0] = Content.Load<Texture2D>("BaseTile");
+            tileImages = new Texture2D[3];
+            tileImages[0] = Content.Load<Texture2D>("BaseTile"); // grass
+            tileImages[1] = Content.Load<Texture2D>("TreeSection"); // trunks
+            tileImages[2] = Content.Load<Texture2D>("TreeTops"); // leaves/branches
 
             flowerImages = new Texture2D[3];
             flowerImages[0] = Content.Load<Texture2D>("Pot");
@@ -199,7 +208,11 @@ namespace HeartQuest
             potBreak = Content.Load<SoundEffect>("potbreak1");
             jump = Content.Load<SoundEffect>("jump");
 
+            blackRect = Content.Load<Texture2D>("rect");
 
+            screenBounds = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
+            gameBG = Content.Load<Texture2D>("Forest");
         }
 
         protected override void UnloadContent()
@@ -340,25 +353,26 @@ namespace HeartQuest
             switch (gameState)
             {
                 case GameState.TITLE_SCREEN:
-                    spriteBatch.Draw(titleBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    spriteBatch.Draw(titleBG, screenBounds, Color.White);
                     titleBox.Draw(spriteBatch);
                     titleMenu.Draw(spriteBatch);
                     credits.Draw(spriteBatch);
                     break;
 
                 case GameState.PLAYING:
+                    spriteBatch.Draw(gameBG, screenBounds, Color.White);
                     world.Draw(spriteBatch);
                     break;
 
                 case GameState.INFO_SCREEN:
-                    spriteBatch.Draw(titleBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    spriteBatch.Draw(titleBG, screenBounds, Color.White);
                     infoBox.Draw(spriteBatch);
                     infoMenu.Draw(spriteBatch);
                     credits.Draw(spriteBatch);
                     break;
 
                 case GameState.VICTORY_SCREEN:
-                    spriteBatch.Draw(victoryBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    spriteBatch.Draw(victoryBG, screenBounds, Color.White);
                     victoryBox.Draw(spriteBatch);
                     victoryMenu.Draw(spriteBatch);
                     credits.Draw(spriteBatch);
@@ -366,7 +380,7 @@ namespace HeartQuest
                     break;
 
                 case GameState.GAMEOVER_SCREEN:
-                    spriteBatch.Draw(gameoverBG, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+                    spriteBatch.Draw(gameoverBG, screenBounds, Color.White);
                     gameoverBox.Draw(spriteBatch);
                     gameoverMenu.Draw(spriteBatch);
                     credits.Draw(spriteBatch);
