@@ -13,7 +13,7 @@ namespace HeartQuest
         GameState gameState = GameState.TITLE_SCREEN;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        
         // textures for menus
         public static Texture2D menuCorner;
         public static Texture2D menuBar;
