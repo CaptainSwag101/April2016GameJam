@@ -124,7 +124,7 @@ namespace HeartQuest
             string[] t5 = { "Return to title", "Exit" };
             infoMenu = new Menu(t5, new Vector2(240, 240), menuCorner, menuBar, menuCenter, 20, 10, font16);
 
-            string[] t6 = { "Made the weekend of April 30, 2016", " at a Neumont University Game Jam", "Created by Justin Furtado and Devin Duren", "Special thanks to Blake Dennis (ideas) and Doug Gatto (flowers)" };
+            string[] t6 = { "Made the weekend of April 30, 2016, at a Neumont University Game Jam", "Created by Justin Furtado and Devin Duren", "Controls: w, a, d, to move, (s does nothing), e to punch, space bar to interact" };
             infoBox = new TextDisplayBox(t6, new Vector2(40, 50), textCorner, textBar, textCenter, 45, 10, font16);
 
             string[] t7 = { "Return to title", "Exit" };

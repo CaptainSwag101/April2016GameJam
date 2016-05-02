@@ -68,11 +68,11 @@ namespace HeartQuest
             Boss = new Boss(Game1.bossImages, new Vector2(350, 384), Player);
             CutsceneText = new string[4][];
             CutsceneText[0] = new string[] { "Hey, friend. Its quite a nice night isn't it?", "Wait... What's that over there?" };
-            CutsceneText[1] = new string[] { "*He punches you in the heart while you are distracted*" };
+            CutsceneText[1] = new string[] { "*Punches you in the heart while you are distracted*" };
             CutsceneText[2] = new string[] { "Finally! A heart of my own!" };
             CutsceneText[3] = new string[] { "Dude, not cool!" };
             CutsceneNum = 0;
-            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(40, 50), Game1.textCorner, Game1.textBar, Game1.textCenter, 45, 10, Game1.font16);
+            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(160, 100), Game1.textCorner, Game1.textBar, Game1.textCenter, 30, 6, Game1.font16);
             continueMenu = new Menu(new string[] { "Continue" }, new Vector2(240, 240), Game1.menuCorner, Game1.menuBar, Game1.menuCenter, 20, 5, Game1.font16);
             startX = Player.Bounds.X + 32;
         }
@@ -86,11 +86,11 @@ namespace HeartQuest
                 for (int y = 0; y < Height; ++y)
                 {
                     if (x == 1 && y == 13 || x == 23 && y == 13 || x == 21 && y == 8 || x == 18 && y == 7 || x == 15 && y == 6
-                        || x == 3 && y == 8 || x == 6 && y == 7 || x == 9 && y == 6)
+                        || x == 3 && y == 8 || x == 6 && y == 7 || x == 9 && y == 6 || (x > 10 && x < 14) && y == 6)
                     {
                         Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] { "Ignore", "Plant Flower", "Break" });
                     }
-                    else if (y == 14) // bottom wall
+                    else if (y == 14 || (x > 10 && x < 14) && y == 7) // bottom wall and middle platform
                     {
                         Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true, false);
                     }
@@ -168,7 +168,7 @@ namespace HeartQuest
                                 Player.Health -= 5;
                             }
 
-                            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(40, 50), Game1.textCorner, Game1.textBar, Game1.textCenter, 45, 10, Game1.font16);
+                            displayBox = new TextDisplayBox(CutsceneText[CutsceneNum], new Vector2(160, 100), Game1.textCorner, Game1.textBar, Game1.textCenter, 30, 6, Game1.font16);
                             continueMenu.ResetMenu();
                             startX = Player.Bounds.X;
                         }
