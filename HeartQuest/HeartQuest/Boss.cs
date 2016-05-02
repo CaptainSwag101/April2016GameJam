@@ -13,7 +13,7 @@ namespace HeartQuest
     {
         private int FrameStart = 0;
         private float punchTimer = 0.0f;
-        private float punchTime = 1.0f;
+        private float punchTime = 0.1f;
         private bool punching = false;
         private Player target;
 
@@ -34,7 +34,7 @@ namespace HeartQuest
                     {
                         punchTimer = 0.0f;
                         punching = true;
-                        target.Health -= 5;
+                        target.Health -= 1;
                     }
                 }
                 else

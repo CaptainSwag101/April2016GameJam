@@ -14,7 +14,7 @@ namespace HeartQuest
         public bool Cutscene { get; set; }
         private int FrameStart = 0;
         private float punchTimer = 0.0f;
-        private float punchTime = 1.0f;
+        private float punchTime = 0.15f;
         private bool punching = false;
 
         public bool Punched { get; set; }

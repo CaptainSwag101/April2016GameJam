@@ -85,7 +85,12 @@ namespace HeartQuest
             {
                 for (int y = 0; y < Height; ++y)
                 {
-                    if (y == 14) // bottom wall
+                    if (x == 1 && y == 13 || x == 23 && y == 13 || x == 21 && y == 8 || x == 18 && y == 7 || x == 15 && y == 6
+                        || x == 3 && y == 8 || x == 6 && y == 7 || x == 9 && y == 6)
+                    {
+                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] { "Ignore", "Plant Flower", "Break" });
+                    }
+                    else if (y == 14) // bottom wall
                     {
                         Tiles[x, y] = new Tile(tileImages[0], new Vector2(x, y) * 32.0f, true, false);
                     }
@@ -101,9 +106,29 @@ namespace HeartQuest
                     {
                         Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, true, false);
                     }
-                    else if (false)
+                    else if (x == 21 && y > 8) // right tree
                     {
-                        Tiles[x, y] = new Tile(Game1.flowerImages, new Vector2(x, y) * 32.0f, false, false, true, 0, new string[] { "Ignore", "Plant Flower", "Break" });
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
+                    }
+                    else if (x == 18 && y > 7) // 2nd right tree
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
+                    }
+                    else if (x == 15 && y > 6) // 3rd right tree
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
+                    }
+                    else if (x == 3 && y > 8) // left tree
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
+                    }
+                    else if (x == 6 && y > 7) // 2nd left tree
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
+                    }
+                    else if (x == 9 && y > 6) // 3rd left tree
+                    {
+                        Tiles[x, y] = new Tile(tileImages[1], new Vector2(x, y) * 32.0f, y < 10, false);
                     }
                     else
                     {
@@ -194,14 +219,14 @@ namespace HeartQuest
                         {
                             if (Boss.Bounds.X < Player.Bounds.X)
                             {
-                                Boss.Health -= 5;
+                                Boss.Health -= 1;
                             }
                         }
                         else if (Player.CurrentImage == 10 || Player.CurrentImage == 8)
                         {
                             if (Boss.Bounds.X > Player.Bounds.X)
                             {
-                                Boss.Health -= 5;
+                                Boss.Health -= 1;
                             }
                         }
                       
