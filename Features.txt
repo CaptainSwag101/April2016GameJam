@@ -1,0 +1,3 @@
+............Features to Include at a later date.......
+
+--Damage class/enums?. Passing an enum to an entity when it takes damage. This will help with the entity taking reduced damage for specific types of damage.
